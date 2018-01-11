@@ -1,0 +1,60 @@
+apply plugin: 'kotlin'
+
+// Setup
+    // Project
+    group 'net.ehvazend.mpu'
+    version 'Dev'
+
+    // Kotlin JVM Target
+    def jvmTarget = "1.8"
+
+    // Version of lib
+    def kotlin = '1.2.10'
+    def junitJupiter = '5.0.0'
+
+buildscript {
+    ext.kotlin = '1.2.10'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Kotlin runtime and reflect
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin"
+//    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin"
+
+    // JUnit Jupiter API and TestEngine implementation
+    testCompile "org.junit.jupiter:junit-jupiter-api:$junitJupiter"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:$junitJupiter"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = jvmTarget
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = jvmTarget
+}
+
+jar {
+    from {
+        String[] include = [
+                "kotlin-runtime-${kotlin}.jar",
+                "kotlin-stdlib-${kotlin}.jar",
+//                "kotlin-reflect-${kotlin}.jar"
+        ]
+
+        configurations.compile
+                .findAll { include.contains(it.name) }
+                .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
