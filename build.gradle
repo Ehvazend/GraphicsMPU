@@ -44,17 +44,3 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = jvmTarget
 }
-
-jar {
-    from {
-        String[] include = [
-                "kotlin-runtime-${kotlin}.jar",
-                "kotlin-stdlib-${kotlin}.jar",
-//                "kotlin-reflect-${kotlin}.jar"
-        ]
-
-        configurations.compile
-                .findAll { include.contains(it.name) }
-                .collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
