@@ -18,4 +18,9 @@ object MoveBoxHandler {
             else -> Data.nextButton.toggleDisable()
         }
     }
+
+    fun allButtonEnable(boolean: Boolean) {
+        backButtonEnable = boolean
+        nextButtonEnable = boolean
+    }
 }

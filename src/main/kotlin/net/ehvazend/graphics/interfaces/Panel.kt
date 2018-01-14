@@ -17,10 +17,10 @@ interface Panel {
     val defaultSlide: Slide
     var currentSlide: Slide
 
-    val backPanel: Panel
+    val backPanel: Panel?
         get() = autoBackPanel()
 
-    val nextPanel: Panel
+    val nextPanel: Panel?
         get() = autoNextPanel()
 
     private fun fillBody() = Pane().also { pane ->
@@ -36,13 +36,13 @@ interface Panel {
 
     private fun autoBackPanel() = Data.panels.let { panels ->
         panels.indexOf(this).let {
-            if (it != 0) panels[it - 1] else throw NullPointerException()
+            if (it != 0) panels[it - 1] else null
         }
     }
 
     private fun autoNextPanel() = Data.panels.let { panels ->
         panels.indexOf(this).let {
-            if (it != panels.lastIndex) panels[it + 1] else throw NullPointerException()
+            if (it != panels.lastIndex) panels[it + 1] else null
         }
     }
 }
