@@ -105,6 +105,7 @@ object Data {
 
     val nextButton: Button = Button().also {
         it.id = "nextButton"
+        it.isDisable = true
         it.isMnemonicParsing = false
         it.text = "Next"
     }
