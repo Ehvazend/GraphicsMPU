@@ -28,44 +28,44 @@ object Data {
 
     // Root
     val root: Pane by lazy {
-        AnchorPane().also {
-            it.prefWidth = 600.0
+        AnchorPane().apply {
+            prefWidth = 600.0
 
-            it.children += Data.background
-            it.children += Data.bodyContainer
-            it.children += AnchorPane().also {
-                it.layoutX = 14.0
-                it.minWidth = 572.0
-                it.isPickOnBounds = false
+            children += Data.background
+            children += Data.bodyContainer
+            children += AnchorPane().apply {
+                layoutX = 14.0
+                minWidth = 572.0
+                isPickOnBounds = false
 
-                it.children += headerContainer
-                it.children += Data.moveBox
+                children += headerContainer
+                children += Data.moveBox
             }
         }
     }
 
-    val background: Rectangle = Rectangle().also {
+    val background: Rectangle = Rectangle().apply {
         // Set
-        it.height = 52.0
-        it.width = 600.0
-        it.fill = LinearGradient(0.0, 0.0, 1.0, 1.0, true, CycleMethod.NO_CYCLE, Stop(0.0, Color.web("#4377a8")), Stop(1.0, Color.web("#42285b")))
+        height = 52.0
+        width = 600.0
+        fill = LinearGradient(0.0, 0.0, 1.0, 1.0, true, CycleMethod.NO_CYCLE, Stop(0.0, Color.web("#4377a8")), Stop(1.0, Color.web("#42285b")))
 
         // Add effects
         // ColorAdjust
-        it.effect = ColorAdjust().also {
-            it.brightness = 0.25
-            it.hue = -1.0
-            it.saturation = 0.25
+        effect = ColorAdjust().apply {
+            brightness = 0.25
+            hue = -1.0
+            saturation = 0.25
 
             // Glow
-            it.input = Glow().also {
-                it.level = 1.0
+            input = Glow().apply {
+                level = 1.0
 
                 // InnerShadow
-                it.input = InnerShadow().also {
-                    it.color = Color.web("#0000001a")
-                    it.offsetY = 2.0
-                    it.radius = 0.0
+                input = InnerShadow().apply {
+                    color = Color.web("#0000001a")
+                    offsetY = 2.0
+                    radius = 0.0
                 }
             }
         }
@@ -73,50 +73,50 @@ object Data {
 
     //-----------------------------------
     // Header
-    val headerContainer: Pane = Pane().also {
-        it.id = "headerContainer"
+    val headerContainer: Pane = Pane().apply {
+        id = "headerContainer"
 
-        AnchorPane.setBottomAnchor(it, .0)
-        AnchorPane.setLeftAnchor(it, .0)
-        AnchorPane.setTopAnchor(it, .0)
+        AnchorPane.setBottomAnchor(this, .0)
+        AnchorPane.setLeftAnchor(this, .0)
+        AnchorPane.setTopAnchor(this, .0)
     }
 
     // Move box container
     val moveBox: HBox by lazy {
-        HBox().also {
-            it.id = "moveBox"
-            it.spacing = 14.0
+        HBox().apply {
+            id = "moveBox"
+            spacing = 14.0
 
-            AnchorPane.setBottomAnchor(it, .0)
-            AnchorPane.setRightAnchor(it, .0)
-            AnchorPane.setTopAnchor(it, .0)
+            AnchorPane.setBottomAnchor(this, .0)
+            AnchorPane.setRightAnchor(this, .0)
+            AnchorPane.setTopAnchor(this, .0)
 
-            it.children += backButton
-            it.children += nextButton
+            children += backButton
+            children += nextButton
         }
     }
 
-    val backButton: Button = Button().also {
-        it.id = "backButton"
-        it.isDisable = true
-        it.isMnemonicParsing = false
-        it.text = "Back"
+    val backButton: Button = Button().apply {
+        id = "backButton"
+        isDisable = true
+        isMnemonicParsing = false
+        text = "Back"
     }
 
-    val nextButton: Button = Button().also {
-        it.id = "nextButton"
-        it.isDisable = true
-        it.isMnemonicParsing = false
-        it.text = "Next"
+    val nextButton: Button = Button().apply {
+        id = "nextButton"
+        isDisable = true
+        isMnemonicParsing = false
+        text = "Next"
     }
 
     //-----------------------------------
     // Panels's container
-    val bodyContainer: Pane = Pane().also {
-        it.id = "bodyContainer"
-        it.relocate(14.0, 37.0)
-        it.prefWidth = 572.0
-        it.padding = Insets(0.0, 0.0, 14.0, 0.0)
+    val bodyContainer: Pane = Pane().apply {
+        id = "bodyContainer"
+        relocate(14.0, 37.0)
+        prefWidth = 572.0
+        padding = Insets(0.0, 0.0, 14.0, 0.0)
     }
 
     val panels = ArrayList<Panel>()

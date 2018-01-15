@@ -6,7 +6,8 @@ import net.ehvazend.graphics.Data
 import net.ehvazend.graphics.handlers.AnimationHandler.Add
 import net.ehvazend.graphics.handlers.AnimationHandler.Effect.appearance
 import net.ehvazend.graphics.handlers.AnimationHandler.Effect.disappearance
-import net.ehvazend.graphics.handlers.AnimationHandler.timeline
+import net.ehvazend.graphics.handlers.AnimationHandler.InstantEffect.instantDisappearance
+import net.ehvazend.graphics.handlers.AnimationHandler.goTo
 import net.ehvazend.graphics.handlers.MoveBoxHandler.allButtonEnable
 import net.ehvazend.graphics.interfaces.Panel
 import net.ehvazend.graphics.interfaces.Slide
@@ -64,28 +65,33 @@ object ContentHandler {
         }
     }
 
-    // Slide zone -------------------------------
-    sealed class Direction(val x: Double = 0.0, val y: Double = 0.0) {
-        object TOP : Direction(y = -Data.stage.scene.height)
-        object RIGHT : Direction(x = Data.stage.scene.width)
-        object BOTTOM : Direction(y = Data.stage.scene.height)
-        object LEFT : Direction(x = -Data.stage.scene.width)
+    // Direction for slideStep and panelStep
+    private enum class Direction(val x: Double? = null, val y: Double? = null) {
+        TOP(y = -Data.stage.scene.height),
+        RIGHT(x = Data.stage.scene.width),
+        BOTTOM(y = Data.stage.scene.height),
+        LEFT(x = -Data.stage.scene.width)
     }
 
+    // Slide zone -------------------------------
     private fun slideStep(slides: Pair<Slide, Slide>, direction: Direction) {
-        val (newSlide, oldSlide) = slides
+        val (newSlide, oldSlide) = slides.toList()
+        val target = direction.y!!
 
-        oldSlide.slide.also {
-            it.disappearance()
-            it.layoutYProperty().timeline(0.0 to direction.y, Add(interpolator = Data.Config.interpolator))
+        // Move oldSlide
+        oldSlide.body.apply {
+            disappearance()
+            layoutYProperty().goTo(0.0 to target)
         }
 
-        newSlide.slide.also {
-            it.appearance()
-            it.layoutYProperty().timeline(-direction.y to 0.0, Add(interpolator = Data.Config.interpolator))
+        // Move newSlide
+        newSlide.body.apply {
+            appearance()
+            layoutYProperty().goTo(-target to 0.0)
         }
 
-        newSlide.source.currentSlide(newSlide)
+        // Set currentSlide
+        newSlide.setAsCurrentSlide()
     }
 
     fun slideNext(slides: Pair<Slide, Slide>) = slideStep(slides, Direction.BOTTOM)
@@ -94,33 +100,27 @@ object ContentHandler {
     // Panel zone -------------------------------
     private fun panelStep(panels: Pair<Panel, Panel>, direction: Direction) {
         val (newPanel, oldPanel) = panels
+        val target = direction.x!!
 
-        // Load new objects
-        loadContent(newPanel).toList().forEach { it.opacity = 0.0 }
+        // Load new objects and disappearance it
+        loadContent(newPanel).toList().forEach { it.instantDisappearance() }
 
-        // Header
-        oldPanel.header.disappearance(Add(Data.Config.duration / 2.0)).setOnFinished {
-            newPanel.header.opacity = 0.0
-            newPanel.header.appearance(Add(Data.Config.duration / 2.0))
-        }
+        // Header logic
+        oldPanel.header.disappearance(Add(Data.Config.duration / 2.0))
+                .setOnFinished { newPanel.header.appearance(Add(Data.Config.duration / 2.0)) }
 
-        // Body
+        // Body logic
         oldPanel.body.disappearance()
-        oldPanel.body.layoutXProperty().timeline(0.0 to direction.x, Add(interpolator = Data.Config.interpolator)).setOnFinished {
+        oldPanel.body.layoutXProperty().goTo(0.0 to target).setOnFinished {
             // Delete old objects when they are behind Data.root scene
             Data.bodyContainer.children.remove(oldPanel.body)
             Data.headerContainer.children.remove(oldPanel.header)
         }
 
         newPanel.body.appearance()
-        newPanel.body.layoutXProperty().timeline(-direction.x to 0.0, AnimationHandler.Add(interpolator = Data.Config.interpolator))
+        newPanel.body.layoutXProperty().goTo(-target to 0.0)
     }
 
-    private fun panelBack() {
-        panelStep(Data.currentPanel!!.backPanel!! to Data.currentPanel!!, Direction.RIGHT)
-    }
-
-    private fun panelNext() {
-        panelStep(Data.currentPanel!!.nextPanel!! to Data.currentPanel!!, Direction.LEFT)
-    }
+    private fun panelBack() = panelStep(Data.currentPanel!!.backPanel!! to Data.currentPanel!!, Direction.RIGHT)
+    private fun panelNext() = panelStep(Data.currentPanel!!.nextPanel!! to Data.currentPanel!!, Direction.LEFT)
 }

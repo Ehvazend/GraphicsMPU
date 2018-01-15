@@ -25,8 +25,8 @@ interface Panel {
 
     private fun fillBody() = Pane().also { pane ->
         slides.forEach { key, value ->
-            pane.children += value.slide.also { it.id = key }
-            if (value != defaultSlide) value.slide.instantDisappearance() else currentSlide = defaultSlide
+            pane.children += value.body.apply { id = key }
+            if (value != defaultSlide) value.body.instantDisappearance() else currentSlide = defaultSlide
         }
     }
 

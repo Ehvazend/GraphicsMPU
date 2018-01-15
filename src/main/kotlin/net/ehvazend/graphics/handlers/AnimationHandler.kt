@@ -4,6 +4,7 @@ import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
+import javafx.beans.property.DoubleProperty
 import javafx.beans.value.WritableValue
 import javafx.scene.Node
 import javafx.scene.effect.ColorAdjust
@@ -20,7 +21,7 @@ object AnimationHandler {
         it.keyFrames += KeyFrame(
                 Duration.seconds(add?.duration ?: Data.Config.duration),
                 // Set up KeyValue
-                KeyValue(this.also { it.value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
+                KeyValue(this.apply { value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
         )
 
         // Set up Timeline
@@ -31,12 +32,14 @@ object AnimationHandler {
         it.also(Timeline::play)
     }
 
+    fun DoubleProperty.goTo(pair: Pair<Double, Double>) = this.timeline(pair, Add(interpolator = Data.Config.interpolator))
+
     object Effect {
         fun Node.appearance(add: Add? = null, initialValue: Double? = this.opacity)
-                = this.opacityProperty().timeline(initialValue to 1.0, add).also { this.isMouseTransparent = false }
+                = this.opacityProperty().timeline(initialValue to 1.0, add).also { isMouseTransparent = false }
 
         fun Node.disappearance(add: Add? = null, initialValue: Double? = this.opacity)
-                = this.opacityProperty().timeline(initialValue to 0.0, add).also { this.isMouseTransparent = true }
+                = this.opacityProperty().timeline(initialValue to 0.0, add).also { isMouseTransparent = true }
 
         fun Node.toggleDisable(add: Add? = null) = when (this.isDisable) {
             true -> this.enable(add)
@@ -73,14 +76,14 @@ object AnimationHandler {
     }
 
     object InstantEffect {
-        fun Node.instantAppearance() = this.also {
-            it.opacity = 1.0
-            it.isMouseTransparent = false
+        fun Node.instantAppearance() = this.apply {
+            opacity = 1.0
+            isMouseTransparent = false
         }
 
-        fun Node.instantDisappearance() = this.also {
-            it.opacity = .0
-            it.isMouseTransparent = true
+        fun Node.instantDisappearance() = this.apply {
+            opacity = .0
+            isMouseTransparent = true
         }
     }
 }
