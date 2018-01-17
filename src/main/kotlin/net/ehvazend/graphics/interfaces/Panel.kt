@@ -11,7 +11,6 @@ interface Panel {
 
     val header: Node
     val body: Node
-        get() = fillBody()
 
     val slides: HashMap<String, Slide>
     val defaultSlide: Slide
@@ -23,7 +22,9 @@ interface Panel {
     val nextPanel: Panel?
         get() = autoNextPanel()
 
-    private fun fillBody() = Pane().also { pane ->
+    fun fillBody() = Pane().also { pane ->
+        pane.id = id
+
         slides.forEach { key, value ->
             pane.children += value.body.apply { id = key }
             if (value != defaultSlide) value.body.instantDisappearance() else currentSlide = defaultSlide
