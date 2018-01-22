@@ -9,11 +9,11 @@ apply plugin: 'kotlin'
     def jvmTarget = "1.8"
 
     // Version of lib
-    def kotlin = '1.2.10'
+    def kotlin = '1.2.20'
     def junitJupiter = '5.0.0'
 
 buildscript {
-    ext.kotlin = '1.2.10'
+    ext.kotlin = '1.2.20'
 
     repositories {
         mavenCentral()
@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     // Kotlin runtime and reflect
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
 //    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin"
 
     // JUnit Jupiter API and TestEngine implementation
