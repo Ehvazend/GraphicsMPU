@@ -26,7 +26,7 @@ object MoveBoxHandler {
         nextButtonEnable = boolean
     }
 
-    data class HoldValue(val mode: Boolean, val holdValue: Boolean)
+    data class HoldValue(var mode: Boolean, var holdValue: Boolean)
 
     var holdBackButtonOn: HoldValue by Delegates.observable(HoldValue(false, false)) { _, oldValue, newValue ->
         if (newValue != oldValue) when (newValue.mode) {
