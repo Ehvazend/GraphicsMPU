@@ -26,7 +26,7 @@ object MoveBoxHandler {
         nextButtonEnable = boolean
     }
 
-    data class HoldValue(var mode: Boolean, var holdValue: Boolean)
+    data class HoldValue(val mode: Boolean, val holdValue: Boolean)
 
     var holdBackButtonOn: HoldValue by Delegates.observable(HoldValue(false, false)) { _, oldValue, newValue ->
         if (newValue != oldValue) when (newValue.mode) {
@@ -35,7 +35,7 @@ object MoveBoxHandler {
                 false -> Data.nextButton.forceDisable()
             }
 
-            false -> when (!nextButtonEnable) {
+            false -> when (nextButtonEnable) {
                 true -> Data.nextButton.forceEnable()
                 false -> Data.nextButton.forceDisable()
             }
@@ -49,7 +49,7 @@ object MoveBoxHandler {
                 false -> Data.nextButton.forceDisable()
             }
 
-            false -> when (!nextButtonEnable) {
+            false -> when (nextButtonEnable) {
                 true -> Data.nextButton.forceEnable()
                 false -> Data.nextButton.forceDisable()
             }

@@ -20,20 +20,20 @@ object AnimationHandler {
         val cycleCount: Int? = null
     )
 
-    fun <T> WritableValue<T>.timeline(values: Pair<T, T>, add: Add? = null) = Timeline().let {
+    fun <T> WritableValue<T>.timeline(values: Pair<T, T>, add: Add? = null) = Timeline().run {
         // Set up KeyFrame and adding in to Timeline
-        it.keyFrames += KeyFrame(
+        keyFrames += KeyFrame(
             Duration.seconds(add?.duration ?: Data.Config.duration),
             // Set up KeyValue
-            KeyValue(this.apply { value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
+            KeyValue(this@timeline.apply { value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
         )
 
         // Set up Timeline
-        it.isAutoReverse = add?.isAutoReverse ?: false
-        it.cycleCount = add?.cycleCount ?: 0
+        isAutoReverse = add?.isAutoReverse ?: false
+        cycleCount = add?.cycleCount ?: 0
 
         // Return and play
-        it.also(Timeline::play)
+        also(Timeline::play)
     }
 
     fun DoubleProperty.goTo(pair: Pair<Double, Double>) =
@@ -54,7 +54,6 @@ object AnimationHandler {
         } else null
 
         fun Node.disable(add: Add? = null): Timeline? = if (!this.isDisable) {
-            println("This - $this, isDisable - ${this.isDisable}")
             this.opacityProperty().timeline(1.0 to 0.5, add).apply {
                 isMouseTransparent = true
                 setOnFinished {
@@ -112,7 +111,7 @@ object AnimationHandler {
         }
 
         fun Node.instantDisappearance() = this.apply {
-            opacity = .0
+            opacity = 0.0
             isMouseTransparent = true
         }
     }
