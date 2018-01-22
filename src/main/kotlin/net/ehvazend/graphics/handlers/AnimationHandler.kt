@@ -41,26 +41,49 @@ object AnimationHandler {
         fun Node.disappearance(add: Add? = null, initialValue: Double? = this.opacity)
                 = this.opacityProperty().timeline(initialValue to 0.0, add).also { isMouseTransparent = true }
 
+        fun Node.enable(add: Add? = null): Timeline? = if (this.isDisable) {
+            this.opacityProperty().timeline(0.5 to 1.0, add).apply {
+                isMouseTransparent = false
+                setOnFinished { isDisable = false }
+            }
+        } else null
+
+        fun Node.disable(add: Add? = null): Timeline? = if (!this.isDisable) {
+            println("This - $this, isDisable - ${this.isDisable}")
+            this.opacityProperty().timeline(1.0 to 0.5, add).apply {
+                isMouseTransparent = true
+                setOnFinished {
+                    isMouseTransparent = false
+                    isDisable = true
+                }
+            }
+        } else null
+
         fun Node.toggleDisable(add: Add? = null) = when (this.isDisable) {
             true -> this.enable(add)
             false -> this.disable(add)
         }
 
-        fun Node.enable(add: Add? = null) {
-            if (this.isDisable) {
-                this.opacityProperty().timeline(0.5 to 1.0, add).setOnFinished { this.isDisable = false }
-            }
+        fun Node.forceEnable(add: Add? = null): Timeline? =
+                this.opacityProperty().timeline(0.5 to 1.0, add).apply {
+                    isMouseTransparent = false
+                    setOnFinished { isDisable = false }
+                }
+
+        fun Node.forceDisable(add: Add? = null): Timeline? =
+                this.opacityProperty().timeline(1.0 to 0.5, add).apply {
+                    isMouseTransparent = true
+                    setOnFinished {
+                        isMouseTransparent = false
+                        isDisable = true
+                    }
+                }
+
+        fun Node.forceToggleDisable(add: Add? = null) = when (this.isDisable) {
+            true -> this.forceEnable(add)
+            false -> this.forceDisable(add)
         }
 
-        fun Node.disable(add: Add? = null) {
-            if (!this.isDisable) {
-                this.isMouseTransparent = true
-                this.opacityProperty().timeline(1.0 to 0.5, add).setOnFinished {
-                    this.isMouseTransparent = false
-                    this.isDisable = true
-                }
-            }
-        }
 
         fun backgroundEffect(add: Add): Timeline {
             return (Data.background.effect as ColorAdjust).hueProperty().timeline(0.0 to 1.0,
