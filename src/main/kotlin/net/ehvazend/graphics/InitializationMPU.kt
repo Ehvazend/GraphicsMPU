@@ -3,8 +3,8 @@ package net.ehvazend.graphics
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
-import net.ehvazend.graphics.handlers.AnimationHandler.Add
 import net.ehvazend.graphics.handlers.AnimationHandler
+import net.ehvazend.graphics.handlers.AnimationHandler.Add
 import net.ehvazend.graphics.handlers.ContentHandler
 import net.ehvazend.graphics.interfaces.Panel
 

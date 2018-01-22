@@ -13,15 +13,19 @@ import net.ehvazend.graphics.Data
 
 object AnimationHandler {
     // Allows smoothly change value
-    data class Add(val duration: Double? = null, val interpolator: Interpolator? = null,
-                   val isAutoReverse: Boolean? = null, val cycleCount: Int? = null)
+    data class Add(
+        val duration: Double? = null,
+        val interpolator: Interpolator? = null,
+        val isAutoReverse: Boolean? = null,
+        val cycleCount: Int? = null
+    )
 
     fun <T> WritableValue<T>.timeline(values: Pair<T, T>, add: Add? = null) = Timeline().let {
         // Set up KeyFrame and adding in to Timeline
         it.keyFrames += KeyFrame(
-                Duration.seconds(add?.duration ?: Data.Config.duration),
-                // Set up KeyValue
-                KeyValue(this.apply { value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
+            Duration.seconds(add?.duration ?: Data.Config.duration),
+            // Set up KeyValue
+            KeyValue(this.apply { value = values.first }, values.second, add?.interpolator ?: Interpolator.EASE_BOTH)
         )
 
         // Set up Timeline
@@ -32,14 +36,15 @@ object AnimationHandler {
         it.also(Timeline::play)
     }
 
-    fun DoubleProperty.goTo(pair: Pair<Double, Double>) = this.timeline(pair, Add(interpolator = Data.Config.interpolator))
+    fun DoubleProperty.goTo(pair: Pair<Double, Double>) =
+        this.timeline(pair, Add(interpolator = Data.Config.interpolator))
 
     object Effect {
-        fun Node.appearance(add: Add? = null, initialValue: Double? = this.opacity)
-                = this.opacityProperty().timeline(initialValue to 1.0, add).also { isMouseTransparent = false }
+        fun Node.appearance(add: Add? = null, initialValue: Double? = this.opacity) =
+            this.opacityProperty().timeline(initialValue to 1.0, add).also { isMouseTransparent = false }
 
-        fun Node.disappearance(add: Add? = null, initialValue: Double? = this.opacity)
-                = this.opacityProperty().timeline(initialValue to 0.0, add).also { isMouseTransparent = true }
+        fun Node.disappearance(add: Add? = null, initialValue: Double? = this.opacity) =
+            this.opacityProperty().timeline(initialValue to 0.0, add).also { isMouseTransparent = true }
 
         fun Node.enable(add: Add? = null): Timeline? = if (this.isDisable) {
             this.opacityProperty().timeline(0.5 to 1.0, add).apply {
@@ -65,19 +70,19 @@ object AnimationHandler {
         }
 
         fun Node.forceEnable(add: Add? = null): Timeline? =
-                this.opacityProperty().timeline(0.5 to 1.0, add).apply {
-                    isMouseTransparent = false
-                    setOnFinished { isDisable = false }
-                }
+            this.opacityProperty().timeline(0.5 to 1.0, add).apply {
+                isMouseTransparent = false
+                setOnFinished { isDisable = false }
+            }
 
         fun Node.forceDisable(add: Add? = null): Timeline? =
-                this.opacityProperty().timeline(1.0 to 0.5, add).apply {
-                    isMouseTransparent = true
-                    setOnFinished {
-                        isMouseTransparent = false
-                        isDisable = true
-                    }
+            this.opacityProperty().timeline(1.0 to 0.5, add).apply {
+                isMouseTransparent = true
+                setOnFinished {
+                    isMouseTransparent = false
+                    isDisable = true
                 }
+            }
 
         fun Node.forceToggleDisable(add: Add? = null) = when (this.isDisable) {
             true -> this.forceEnable(add)
@@ -86,8 +91,10 @@ object AnimationHandler {
 
 
         fun backgroundEffect(add: Add): Timeline {
-            return (Data.background.effect as ColorAdjust).hueProperty().timeline(0.0 to 1.0,
-                    add.copy(isAutoReverse = true, cycleCount = -1))
+            return (Data.background.effect as ColorAdjust).hueProperty().timeline(
+                0.0 to 1.0,
+                add.copy(isAutoReverse = true, cycleCount = -1)
+            )
         }
 
         fun contentAppear(add: Add? = null) {

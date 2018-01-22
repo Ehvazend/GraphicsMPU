@@ -29,7 +29,7 @@ object ContentHandler {
         }
 
         return loadHeader(panel) to loadBody(panel)
-                .apply { Data.currentPanel = panel }
+            .apply { Data.currentPanel = panel }
     }
 
     private fun initMoveBox() {
@@ -107,7 +107,7 @@ object ContentHandler {
 
         // Header logic
         oldPanel.header.disappearance(Add(Data.Config.duration / 2.0))
-                .setOnFinished { newPanel.header.appearance(Add(Data.Config.duration / 2.0)) }
+            .setOnFinished { newPanel.header.appearance(Add(Data.Config.duration / 2.0)) }
 
         // Body logic
         oldPanel.body.disappearance()

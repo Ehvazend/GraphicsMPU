@@ -19,7 +19,7 @@ import net.ehvazend.graphics.interfaces.Panel
 
 object Data {
     object Config {
-        val duration = .75
+        const val duration = .75
         val interpolator = Interpolator.SPLINE(1.0, .2, .2, 1.0)!!
     }
 
@@ -48,7 +48,16 @@ object Data {
         // Set
         height = 52.0
         width = 600.0
-        fill = LinearGradient(0.0, 0.0, 1.0, 1.0, true, CycleMethod.NO_CYCLE, Stop(0.0, Color.web("#4377a8")), Stop(1.0, Color.web("#42285b")))
+        fill = LinearGradient(
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            true,
+            CycleMethod.NO_CYCLE,
+            Stop(0.0, Color.web("#4377a8")),
+            Stop(1.0, Color.web("#42285b"))
+        )
 
         // Add effects
         // ColorAdjust
