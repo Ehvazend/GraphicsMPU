@@ -29,11 +29,12 @@ object Data {
     // Root
     val root: Pane by lazy {
         AnchorPane().apply {
+            id = "root"
             prefWidth = 600.0
 
-            children += Data.background
             children += Data.bodyContainer
             children += AnchorPane().apply {
+                id = "header"
                 layoutX = 14.0
                 minWidth = 572.0
                 isPickOnBounds = false

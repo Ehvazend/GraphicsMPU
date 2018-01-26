@@ -16,7 +16,6 @@ object ContentHandler {
     fun initContent(panel: Panel) {
         loadContent(panel)
         initMoveBox()
-        resizeBackground()
     }
 
     private fun loadContent(panel: Panel): Pair<Node, Node> {
@@ -29,7 +28,27 @@ object ContentHandler {
         }
 
         return loadHeader(panel) to loadBody(panel)
-            .apply { Data.currentPanel = panel }
+            .apply {
+                Data.currentPanel = panel.apply { setOnLoadPanel() }
+                resizeApplication()
+            }
+    }
+
+    private fun unloadContent(panel: Panel): Pair<Node, Node> {
+        fun unloadHeader(panel: Panel) = panel.header.also {
+            Data.headerContainer.children.remove(it)
+        }
+
+        fun unloadBody(panel: Panel) = panel.body.also {
+            Data.bodyContainer.children.remove(it)
+        }
+
+        return unloadHeader(panel) to unloadBody(panel)
+            .apply {
+                if (Data.currentPanel == panel) Data.currentPanel = null
+                panel.setOnUnloadPanel()
+                resizeApplication()
+            }
     }
 
     private fun initMoveBox() {
@@ -54,14 +73,11 @@ object ContentHandler {
         refreshState()
     }
 
-    private fun resizeBackground() {
-        when {
-            Data.root.height != 0.0 -> Data.background.height = Data.root.height
-            Data.root.height == 0.0 -> {
-                Platform.runLater {
-                    Data.background.height = Data.root.height
-                }
-            }
+    private fun resizeApplication() {
+        Platform.runLater {
+            Data.root.autosize()
+            Data.background.height = Data.root.height
+            Data.stage.sizeToScene()
         }
     }
 
@@ -102,9 +118,6 @@ object ContentHandler {
         val (newPanel, oldPanel) = panels
         val target = direction.x!!
 
-        // Load new objects and disappearance it
-        loadContent(newPanel).toList().forEach { it.instantDisappearance() }
-
         // Header logic
         oldPanel.header.disappearance(Add(Data.Config.duration / 2.0))
             .setOnFinished { newPanel.header.appearance(Add(Data.Config.duration / 2.0)) }
@@ -113,9 +126,11 @@ object ContentHandler {
         oldPanel.body.disappearance()
         oldPanel.body.layoutXProperty().goTo(0.0 to target).setOnFinished {
             // Delete old objects when they are behind Data.root scene
-            Data.bodyContainer.children.remove(oldPanel.body)
-            Data.headerContainer.children.remove(oldPanel.header)
+            unloadContent(oldPanel)
         }
+
+        // Load new objects and disappearance it
+        loadContent(newPanel).toList().forEach { it.instantDisappearance() }
 
         newPanel.body.appearance()
         newPanel.body.layoutXProperty().goTo(-target to 0.0)
