@@ -22,6 +22,12 @@ interface Panel {
     val nextPanel: Panel?
         get() = autoNextPanel()
 
+    val setOnLoadPanel: () -> Unit
+        get() = {}
+
+    val setOnUnloadPanel: () -> Unit
+        get() = {}
+
     fun fillBody() = Pane().also { pane ->
         pane.id = id
 
