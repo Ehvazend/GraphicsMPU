@@ -1,20 +1,18 @@
 package net.ehvazend.graphics.interfaces
 
-import javafx.scene.Node
 import javafx.scene.layout.Pane
 import net.ehvazend.graphics.Data
-import net.ehvazend.graphics.handlers.AnimationHandler.InstantEffect.instantDisappearance
 import java.util.*
 
 interface Panel {
     val id: String
 
-    val header: Node
-    val body: Node
+    val header: Pane
+    val body: Pane
 
     val slides: HashMap<String, Slide>
     val defaultSlide: Slide
-    var currentSlide: Slide
+    var currentSlide: Slide?
 
     val backPanel: Panel?
         get() = autoBackPanel()
@@ -28,17 +26,9 @@ interface Panel {
     val setOnUnloadPanel: () -> Unit
         get() = {}
 
-    fun fillBody() = Pane().also { pane ->
-        pane.id = id
-
-        slides.forEach { key, value ->
-            pane.children += value.body.apply { id = key }
-            if (value != defaultSlide) value.body.instantDisappearance() else currentSlide = defaultSlide
-        }
-    }
-
-    fun currentSlide(value: Slide) {
-        currentSlide = value
+    fun loadDefaultSlide(): Pane = Pane().apply {
+        id = this@Panel.id
+        Slide.load(defaultSlide, this)
     }
 
     private fun autoBackPanel() = Data.panels.let { panels ->

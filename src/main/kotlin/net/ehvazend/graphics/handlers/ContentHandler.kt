@@ -97,17 +97,20 @@ object ContentHandler {
         // Move oldSlide
         oldSlide.body.apply {
             disappearance()
-            layoutYProperty().goTo(0.0 to target)
+            translateYProperty().goTo(0.0 to target).setOnFinished {
+                Slide.unload(oldSlide)
+                resizeApplication()
+            }
         }
 
         // Move newSlide
+        Slide.load(newSlide)
+        resizeApplication()
+
         newSlide.body.apply {
             appearance()
-            layoutYProperty().goTo(-target to 0.0)
+            translateYProperty().goTo(-target to 0.0)
         }
-
-        // Set currentSlide
-        newSlide.setAsCurrentSlide()
     }
 
     fun slideNext(slides: Pair<Slide, Slide>) = slideStep(slides, Direction.BOTTOM)
@@ -123,17 +126,21 @@ object ContentHandler {
             .setOnFinished { newPanel.header.appearance(Add(Data.Config.duration / 2.0)) }
 
         // Body logic
-        oldPanel.body.disappearance()
-        oldPanel.body.layoutXProperty().goTo(0.0 to target).setOnFinished {
-            // Delete old objects when they are behind Data.root scene
-            unloadContent(oldPanel)
+        oldPanel.body.apply {
+            disappearance()
+            layoutXProperty().goTo(0.0 to target).setOnFinished {
+                // Delete old objects when they are behind Data.root scene
+                unloadContent(oldPanel)
+            }
         }
 
         // Load new objects and disappearance it
         loadContent(newPanel).toList().forEach { it.instantDisappearance() }
 
-        newPanel.body.appearance()
-        newPanel.body.layoutXProperty().goTo(-target to 0.0)
+        newPanel.body.apply {
+            appearance()
+            layoutXProperty().goTo(-target to 0.0)
+        }
     }
 
     private fun panelBack() = panelStep(Data.currentPanel!!.backPanel!! to Data.currentPanel!!, Direction.RIGHT)
