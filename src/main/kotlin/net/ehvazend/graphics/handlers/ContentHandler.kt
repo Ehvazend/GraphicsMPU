@@ -8,6 +8,7 @@ import net.ehvazend.graphics.handlers.AnimationHandler.Effect.appearance
 import net.ehvazend.graphics.handlers.AnimationHandler.Effect.disappearance
 import net.ehvazend.graphics.handlers.AnimationHandler.InstantEffect.instantDisappearance
 import net.ehvazend.graphics.handlers.AnimationHandler.goTo
+import net.ehvazend.graphics.handlers.AnimationHandler.timeline
 import net.ehvazend.graphics.handlers.MoveBoxHandler.allButtonEnable
 import net.ehvazend.graphics.interfaces.Panel
 import net.ehvazend.graphics.interfaces.Slide
@@ -98,14 +99,12 @@ object ContentHandler {
         oldSlide.body.apply {
             disappearance()
             translateYProperty().goTo(0.0 to target).setOnFinished {
-                Slide.unload(oldSlide)
-                resizeApplication()
+                Slide.unload(oldSlide).also { resizeApplication() }
             }
         }
 
         // Move newSlide
-        Slide.load(newSlide)
-        resizeApplication()
+        Slide.load(newSlide).also { resizeApplication() }
 
         newSlide.body.apply {
             appearance()
@@ -135,11 +134,11 @@ object ContentHandler {
         }
 
         // Load new objects and disappearance it
-        loadContent(newPanel).toList().forEach { it.instantDisappearance() }
+        loadContent(newPanel).toList().stream().forEach { it.instantDisappearance() }
 
         newPanel.body.apply {
+            layoutXProperty().timeline(-target to 0.0, Add(interpolator = Data.Config.interpolator))
             appearance()
-            layoutXProperty().goTo(-target to 0.0)
         }
     }
 
