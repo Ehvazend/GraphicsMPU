@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 // Setup
     // Project
     group 'net.ehvazend.mpu'
-    version 'Dev'
+    version '1.0'
 
     // Kotlin JVM Target
     def jvmTarget = "1.8"

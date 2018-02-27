@@ -37,11 +37,11 @@ object ContentHandler {
 
     private fun unloadContent(panel: Panel): Pair<Node, Node> {
         fun unloadHeader(panel: Panel) = panel.header.also {
-            Data.headerContainer.children.remove(it)
+            Data.headerContainer.children -= it
         }
 
         fun unloadBody(panel: Panel) = panel.body.also {
-            Data.bodyContainer.children.remove(it)
+            Data.bodyContainer.children -= it
         }
 
         return unloadHeader(panel) to unloadBody(panel)
